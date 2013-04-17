@@ -31,6 +31,7 @@ my $hosts;
 my $ports;
 my $verbose;
 my $http1;
+my $filter;
 my $ssl;
 my $uri="/";
 
@@ -39,6 +40,7 @@ my $result = GetOptions (
 	"P|proxyport=i" => \$proxyport,
         "i|ip=s" => \$hosts,
 	"p|port=s" => \$ports,
+	"f|filter=s" => \$filter,
 	"m|method=s" => \$method,
 	"e|scheme=s" => \$scheme,
 	"s|ssl" => \$ssl,
@@ -144,11 +146,16 @@ foreach my $host (@ahosts) {
 		print $output."\n" if ($verbose>5);
 
 		my $foundkey=0;
-		foreach my $key ( keys %{$reftable} ) {
-			if ($output =~ /$key/) {
-				$foundkey=1;
-				print $reftable->{$key};
-				print "\n";
+		if ($output =~ /$filter/) {
+			print "Pattern: $filter\n";
+			$foundkey=1;
+		} else {
+			foreach my $key ( keys %{$reftable} ) {
+				if ($output =~ /$key/) {
+					$foundkey=1;
+					print $reftable->{$key};
+					print "\n";
+				}
 			}
 		}
 						
